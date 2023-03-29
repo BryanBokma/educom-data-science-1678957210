@@ -80,5 +80,81 @@ ADD FOREIGN KEY (district_ID) REFERENCES mhl_districts(id);
 ALTER TABLE mhl_cities
 ADD FOREIGN KEY (commune_ID) REFERENCES mhl_communes(id);
 
+    -- Kijken waar de fout zit
+    SELECT * 
+    FROM mhl_cities
+    LEFT JOIN mhl_communes ON
+    mhl_cities.commune_ID = mhl_communes.id
+    WHERE mhl_communes.id IS NULL;
+
+    ALTER TABLE mhl_cities MODIFY commune_ID INT(11) NULL;
+
+    -- commune_ID de waarde NULL geven
+    UPDATE mhl_cities
+    SET commune_ID=NULL
+    WHERE commune_ID=0;
+
+    -- Bij de output is te zien bij de eerste query dat de waardes 0 aanwezig zijn en 755 geen bekende commune_ID is
+     DELETE FROM mhl_cities WHERE commune_ID = 755;
+    -- succes
+
+-- mhl_contacts 
+
+-- supplier_ID FK
+ALTER TABLE mhl_contacts
+ADD FOREIGN KEY (supplier_ID) REFERENCES mhl_suppliers(id);
+
+    -- kijken waar de fout zit
+    SELECT * 
+    FROM mhl_contacts
+    LEFT JOIN mhl_suppliers ON
+    mhl_contacts.supplier_ID = mhl_suppliers.id
+    WHERE mhl_suppliers.id IS NULL;
+
+    ALTER TABLE mhl_contacts MODIFY supplier_ID INT(11) NULL;
+
+    UPDATE mhl_contacts
+	SET supplier_ID = NULL
+	WHERE supplier_ID IN(
+		SELECT supplier_ID FROM mhl_contacts
+		LEFT JOIN mhl_suppliers ON mhl_contacts.supplier_ID = mhl_suppliers.id
+		WHERE mhl_suppliers.id IS NULL);
+    -- succes
+
+-- department FK
+ALTER TABLE mhl_contacts
+ADD FOREIGN KEY (department) REFERENCES mhl_departments(id);
+    -- succes
+
+-- mhl_hitcount (error 1452)
+ALTER TABLE mhl_hitcount
+ADD FOREIGN KEY (supplier_ID) REFERENCES mhl_suppliers(id);
+
+    -- kijken waar de fout zit
+    SELECT * 
+    FROM mhl_hitcount
+    LEFT JOIN mhl_suppliers ON
+    mhl_hitcount.supplier_ID = mhl_suppliers.id
+    WHERE mhl_suppliers.id IS NULL;
+
+    ALTER TABLE mhl_hitcount MODIFY supplier_ID INT(11) NULL;
+
+    UPDATE mhl_hitcount
+    SET supplier_ID = NULL
+    WHERE supplier_ID IN(
+        SELECT supplier_ID FROM mhl_hitcount
+        LEFT JOIN mhl_suppliers ON mhl_hitcount.supplier_ID = mhl_suppliers.id
+        WHERE mhl_suppliers.id IS NULL);
+    
+-- mhl_suppliers_mhl_rubriek_view
+
+-- mhl_detaildefs
+
+-- mhl_properties
+
+-- mhl_yn_properties
+
+-- mhl_suppliers
+
 
 
