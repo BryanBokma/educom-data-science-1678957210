@@ -145,14 +145,57 @@ ADD FOREIGN KEY (supplier_ID) REFERENCES mhl_suppliers(id);
         SELECT supplier_ID FROM mhl_hitcount
         LEFT JOIN mhl_suppliers ON mhl_hitcount.supplier_ID = mhl_suppliers.id
         WHERE mhl_suppliers.id IS NULL);
+    -- werkt nog steeds niet
     
 -- mhl_suppliers_mhl_rubriek_view
+-- error
+ALTER TABLE mhl_suppliers_mhl_rubriek_view
+ADD FOREIGN KEY (mhl_suppliers_ID) REFERENCES mhl_suppliers(id);
+
+-- error
+ALTER TABLE mhl_suppliers_mhl_rubriek_view
+ADD FOREIGN KEY (mhl_rubriek_view_ID) REFERENCES mhl_rubrieken(id);
 
 -- mhl_detaildefs
+ALTER TABLE mhl_detaildefs
+ADD FOREIGN KEY (group_ID) REFERENCES mhl_detailgroups(id);
+-- succes
+
+-- error
+ALTER TABLE mhl_detaildefs
+ADD FOREIGN KEY (propertytype_ID) REFERENCES mhl_propertytypes(id);
 
 -- mhl_properties
+-- error
+ALTER TABLE mhl_properties
+ADD FOREIGN KEY (supplier_ID) REFERENCES mhl_suppliers(id);
+
+-- error
+ALTER TABLE mhl_properties
+ADD FOREIGN KEY (propertytype_ID) REFERENCES mhl_propertytypes(id);
+
+ALTER TABLE mhl_properties
+ADD CONSTRAINT FK_mhl_properties_propertytype_ID
+FOREIGN KEY (propertytype_ID) REFERENCES mhl_propertytypes(id);
+
+SELECT * FROM mhl_properties P
+LEFT JOIN mhl_propertytypes PT ON P.propertytype_ID = PT.id
+WHERE PT.id IS NULL;
+-- Hier staan allemaal propertytype_ID = 0 in de mhl_properties tabel. Je kan dit dan veranderen door NULLs.
+
+    ALTER TABLE mhl_properties MODIFY propertytype_ID INT(11) NULL;
+	UPDATE mhl_properties
+	SET propertytype_ID=NULL
+	WHERE propertytype_ID=0;
 
 -- mhl_yn_properties
+-- error
+ALTER TABLE mhl_yn_properties
+ADD FOREIGN KEY (supplier_ID) REFERENCES mhl_suppliers(id);
+
+-- error
+ALTER TABLE mhl_yn_properties
+ADD FOREIGN KEY (propertytype_ID) REFERENCES mhl_propertytypes(id);
 
 -- mhl_suppliers
 
