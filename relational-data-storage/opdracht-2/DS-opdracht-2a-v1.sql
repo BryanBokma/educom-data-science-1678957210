@@ -170,10 +170,18 @@ ADD FOREIGN KEY (propertytype_ID) REFERENCES mhl_propertytypes(id);
 ALTER TABLE mhl_properties
 ADD FOREIGN KEY (supplier_ID) REFERENCES mhl_suppliers(id);
 
--- error
-ALTER TABLE mhl_properties
-ADD FOREIGN KEY (propertytype_ID) REFERENCES mhl_propertytypes(id);
+-- kijken waar de fout zit
+SELECT * FROM mhl_properties
+LEFT JOIN mhl_suppliers ON supplier_ID = id
+WHERE id IS NULL;
 
+    ALTER TABLE mhl_suppliers MODIFY id INT(11) NULL;
+    UPDATE mhl_suppliers
+    SET id=NULL
+    WHERE id=0;
+    -- werkt nog steeds niet
+
+-- error
 ALTER TABLE mhl_properties
 ADD CONSTRAINT FK_mhl_properties_propertytype_ID
 FOREIGN KEY (propertytype_ID) REFERENCES mhl_propertytypes(id);
@@ -187,6 +195,7 @@ WHERE PT.id IS NULL;
 	UPDATE mhl_properties
 	SET propertytype_ID=NULL
 	WHERE propertytype_ID=0;
+-- succes
 
 -- mhl_yn_properties
 -- error
@@ -198,6 +207,22 @@ ALTER TABLE mhl_yn_properties
 ADD FOREIGN KEY (propertytype_ID) REFERENCES mhl_propertytypes(id);
 
 -- mhl_suppliers
+
+-- membertypes 
+ALTER TABLE mhl_suppliers
+ADD FOREIGN KEY (membertype) REFERENCES mhl_membertypes(id);
+
+    -- waardes membertypes sommige zijn 0
+    SELECT * FROM mhl_suppliers
+    LEFT JOIN mhl_membertypes ON mhl_suppliers.membertype = mhl_membertypes.id
+    WHERE mhl_membertypes.id IS NULL;
+
+    -- de waardes 0 veranderen naar NULL
+    UPDATE mhl_suppliers
+    SET membertype=NULL
+    WHERE membertype=0;
+-- succes
+
 
 
 
